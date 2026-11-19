@@ -1,35 +1,51 @@
 # Repository Map
 
+This is the canonical map of current Chaotic Minds Gaming repositories and their ownership boundaries. For implementation maturity, integration blockers and the cleanup snapshot, see the [ATLAS Ecosystem Implementation Registry](../plugins/ATLAS-IMPLEMENTATION-REGISTRY.md).
+
+## Platform and ATLAS repositories
+
 | Repository | Responsibility |
-| --- | --- |
-| `cmg-gaming-site` | Public-facing Chaotic Minds Gaming website and player portal |
-| `cmg-discord-glitch-bot` | Discord community bot for verification, onboarding, tickets, moderation and status |
-| `cmg-atlas-core-plugin` | Shared Core API, database migrations, auth, events and platform modules |
-| `cmg-sdk` | Shared TypeScript API, event and adapter contracts |
-| `cmg-atlas-plugin` | ATLAS adapter and server-side integration |
-| `cmg-7dtd-plugin` | 7 Days to Die adapter and server-side integration |
-| `cmg-ark-plugin` | Future ARK: Survival Evolved adapter |
-| `cmg-atlas-resource-map-plugin` | ATLAS island, resource and travel map application |
-| `cmg-atlas-restart-overlay-plugin` | ATLAS restart countdown overlay and schedule utility |
-| `cmg-atlas-status-host-plugin` | Planned ATLAS status-host component; currently a placeholder |
-| `cmg-admin-console-plugin` | ATLAS administration console and server operations dashboard |
-| `cmg-atlas-admin-plugin` | ATLAS admin tools, backend, Discord bot, frontend and backup utilities |
-| `cmg-atlas-tribes-plugin` | Cluster-aware tribes and group management |
-| `cmg-atlas-commerce-plugin` | Multi-grid shop, wallet, entitlements and reward delivery |
-| `cmg-atlas-connect-plugin` | Cross-grid chat, announcements and Discord relay |
-| `cmg-atlas-player-plugin` | Player utilities, recovery and progression |
-| `cmg-atlas-world-plugin` | World/grid policy, safe zones and gameplay rules |
-| `cmg-atlas-sentinel-plugin` | Read-only health classification, security monitoring and alerts |
-| `cmg-atlas-gridforge-plugin` | ATLAS configuration authoring, map editing and resource coverage |
-| `cmg-atlas-adventures-plugin` | Quests, challenges and progression systems |
-| `cmg-docs` | CMG architecture, security standards and operator documentation |
+|---|---|
+| `cmg-atlas-core-plugin` | Shared Core API, identity, scoped authorization, PostgreSQL migrations, event outbox/leases, wallet and reward foundations |
+| `cmg-sdk` | Shared TypeScript contracts and package definitions |
+| `cmg-atlas-api` | Pinned native ATLAS Server API source/dependency; not a feature plugin |
+| `cmg-atlas-plugin` | Native Windows/C++ ATLAS adapter and loader integration |
+| `cmg-atlas-admin-plugin` | Game/server-side ATLAS administration operations |
+| `cmg-admin-console-plugin` | Operator-facing administration console and server operations dashboard |
+| `cmg-atlas-connect-plugin` | Cross-grid message contracts, relay policy and Discord relay integration |
+| `cmg-discord-glitch-bot` | Discord-native verification, onboarding, tickets, moderation and community operations |
+| `cmg-atlas-commerce-plugin` | Products, shop, checkout, entitlements and commerce client |
+| `cmg-atlas-player-plugin` | Player utilities, recovery policy, snapshots and progression-facing operations |
+| `cmg-atlas-adventures-plugin` | Quest definitions, objective validation and progression |
+| `cmg-atlas-tribes-plugin` | Tribe membership and group-domain reconciliation |
+| `cmg-atlas-world-plugin` | World policies, safe zones and environment configuration |
+| `cmg-atlas-sentinel-plugin` | Server health classification, monitoring and alerts |
+| `cmg-atlas-gridforge-plugin` | Grid topology/configuration authoring and validation |
+| `cmg-atlas-resource-map-plugin` | Existing ATLAS map and resource display |
+| `cmg-atlas-restart-overlay-plugin` | Restart countdown and status display |
+| `cmg-atlas-status-host-plugin` | Planned status-hosting component; currently a placeholder |
+| `cmg-gaming-site` | Public website, player portal and game catalog |
+| `cmg-7dtd-plugin` | 7 Days to Die game-specific adapter |
+| `cmg-ark-plugin` | ARK: Survival Evolved game-specific adapter |
+| `cmg-docs` | Canonical architecture, plugin catalog, security standards and implementation roadmap |
 
-All names above are canonical repository slugs now live on GitHub. Use these names for repository links and clone URLs.
+## Ownership boundaries
 
-The following table preserves names from a previous repository map. These names do not necessarily identify repositories that were renamed. For the complete 33-entry mapping of original to canonical repository names, see the [organization naming standard](https://github.com/Chaotic-Minds-Collective/.github/blob/main/BRAND-AND-REPOSITORY-NAMING.md). Use the Canonical target slug column for current links and clone URLs.
+- Core is authoritative for identity, authorization, shared persistence, wallet/ledger and durable event delivery.
+- SDK defines shared contracts; adapters and applications consume versioned contracts rather than Core's internal schema.
+- AtlasAdmin owns game-specific server operations; Admin Console owns the operator UI.
+- Connect owns relay contracts/policy; Glitch Bot owns Discord-native transport and community workflows.
+- Sentinel owns monitoring/alert classification; status interfaces consume authoritative status data.
+- Adventures owns quest progression; World owns environment/policy definitions.
+- Resource Map owns the existing map UI/data; GridForge owns topology/configuration authoring through a shared schema.
+- ATLAS, 7DTD and ARK remain separate game adapters over shared Core contracts.
 
-| Canonical target slug | Previously documented name |
-| --- | --- |
+## Historical repository names
+
+The following table preserves previously documented names for continuity. These are historical names, not additional repositories.
+
+| Canonical repository | Previously documented name |
+|---|---|
 | `cmg-gaming-site` | `chaotic-gaming` |
 | `cmg-discord-glitch-bot` | `glitch-bot` |
 | `cmg-atlas-core-plugin` | `chaotic-gaming-core` |
@@ -39,8 +55,8 @@ The following table preserves names from a previous repository map. These names 
 | `cmg-ark-plugin` | `chaotic-gaming-ark` |
 | `cmg-docs` | `chaotic-gaming-docs` |
 
-Repository visibility was not changed by the rename operation. Existing website and bot repositories were retained rather than duplicated.
+Repository visibility was not changed by the consolidation work. Existing repositories were retained rather than deleted or duplicated.
 
 ## Dependency direction
 
-Website, Discord bot and game adapters depend on versioned Core API contracts and the SDK. They do not depend on Core's internal database schema or share database credentials.
+Websites, Discord applications and game adapters depend on versioned Core API contracts and the SDK. They must not share database credentials or depend on Core's internal database schema. Game-specific events and operations are translated by their adapters into stable Core contracts.
