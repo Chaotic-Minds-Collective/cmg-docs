@@ -3,6 +3,7 @@
 Architecture, implementation plans, security standards and operator guides for the Chaotic Minds Gaming (CMG) platform.
 
 ## Project principles
+
 - PC-first, staged launch.
 - First game integrations: ATLAS and 7 Days to Die.
 - ARK: Survival Evolved prepared as the next game adapter.
@@ -12,4 +13,9 @@ Architecture, implementation plans, security standards and operator guides for t
 - Changes are developed on feature branches and reviewed through pull requests.
 
 ## Repository map
-See [architecture/REPOSITORY-MAP.md](architecture/REPOSITORY-MAP.md) for responsibilities and dependency direction across the project.
+
+See [architecture/REPOSITORY-MAP.md](architecture/REPOSITORY-MAP.md) for current repository responsibilities and dependency direction.
+
+## ATLAS implementation status
+
+See [plugins/ATLAS-IMPLEMENTATION-REGISTRY.md](plugins/ATLAS-IMPLEMENTATION-REGISTRY.md) for the canonical repository ownership matrix, implementation maturity, duplicate-boundary decisions, integration blockers and current consolidation snapshot.
