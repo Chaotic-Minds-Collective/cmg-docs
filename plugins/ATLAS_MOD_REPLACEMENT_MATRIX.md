@@ -69,7 +69,7 @@ The 30 packages consolidate into these owned systems:
 - **Good server-plugin candidates:** administration, announcements, chat routing, permissions, death handling, respec, stack rules, decay, taming rules, player stats and stable logic, provided the API exposes the necessary hooks.
 - **Potentially mixed code + data work:** recipes, crops, shipyard definitions, structure placement rules and item definitions.
 - **Not a server-plugin-only replacement:** new creatures, new ship models, buildings, foliage, decor, icons, animations and other cooked Unreal content. These require original content assets and a validated content pipeline.
-- **ATLAS API dependency:** the native adapter pins `cmg-atlas-api` commit `a757d0c256e6d221742fb131d46d8049c12815a6`, which includes loader path/dependency and hook hardening. The Windows x64 adapter build passes, but no loader or plugin has yet been validated against the target server runtime. Keep gameplay hooks disabled until the isolated proof-of-concept passes.
+- **ATLAS API dependency:** the native adapter pins `cmg-atlas-api` commit `a757d0c256e6d221742fb131d46d8049c12815a6`, which includes loader path/dependency and hook hardening. The Windows x64 adapter build and portable reward-contract tests pass. The Core reward worker is disabled by default; `AShooterPlayerController.GiveItem` is described in the uploaded build guide but is not declared in the pinned public headers. Verify its ABI, item metadata persistence, and loader/runtime behavior on the exact isolated server build before setting any reward enablement or attestation variables.
 - **No DevKit assumption:** the initial plan must not depend on the user installing or operating the ATLAS DevKit.
 
 ## Implementation sequence

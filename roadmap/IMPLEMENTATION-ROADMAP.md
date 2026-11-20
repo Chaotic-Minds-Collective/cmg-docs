@@ -1,6 +1,6 @@
 # Implementation Roadmap
 
-**Status snapshot:** 2026-11-20. Core identity/authorization, wallet and ledger APIs, eligible wallet-funded orders, payment sandbox/webhook verification, durable quest progress, and the native adapter's Windows x64 build are implemented. Actual native reward delivery and isolated ATLAS/7DTD runtime validation remain release blockers.
+**Status snapshot:** 2026-11-20. Core identity/authorization, wallet and ledger APIs, eligible wallet-funded orders, payment sandbox/webhook verification, durable quest progress, reward lease renewal/manual-review APIs, the renewable SDK worker, and a disabled native reward-worker scaffold are implemented. Actual native ATLAS item grants and isolated ATLAS/7DTD runtime validation remain release blockers.
 
 ## Phase 1 — Platform foundation
 - [x] Create dedicated repositories.
@@ -38,6 +38,22 @@
 - [x] Payment sandbox and signed webhook verification.
 - [x] Entitlements, append-only wallet ledger and reward queue.
 - [ ] Reconciliation, refund handling and abuse controls.
+
+## Reward delivery implementation status
+
+- [x] Core reward claim/ack contract with configurable 15–300 second leases.
+- [x] Fenced renewal by the current service identity holding the active server-scoped lease.
+- [x] Manual-review state for ambiguous external game outcomes; manual-review rewards are excluded from automatic claim retries.
+- [x] Audited platform-admin reconciliation. An approved retry receives a new idempotency key; ordinary retries retain the existing key.
+- [x] SDK worker requires lease renewal before claiming and stops acknowledgement after lease loss.
+- [x] Native adapter worker scaffold with background HTTP, game-thread timer dispatch, item-key allowlist, durable append-only journal, and manual-review fallback.
+- [ ] Verify the native `AShooterPlayerController.GiveItem` ABI against the exact isolated target server build. The method is documented in the uploaded build guide but is not declared in the pinned public API headers.
+- [ ] Verify that item custom-data idempotency markers persist across inventory save, logout, and server restart.
+- [ ] Run end-to-end tests for duplicate claims, lost acknowledgements, worker restart between grant and journal commit, partial grants, player disconnect, lease loss, and admin reconciliation.
+- [ ] Configure reviewed item Blueprint mappings and an absolute durable journal path only after isolated validation.
+- [ ] Enable live reward delivery only after the exact server build/API version and ABI are attested and the isolated test suite passes.
+
+The native worker remains disabled by default. No production server configuration, database migration, or live item grant has been performed.
 
 ## Release gates
 No production deployment, live payment processing, game-server modification, live Discord changes or paid infrastructure until explicitly approved. All game adapters must pass compatibility tests on isolated servers first.
