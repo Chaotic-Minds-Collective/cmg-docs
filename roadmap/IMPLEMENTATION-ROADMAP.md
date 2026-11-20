@@ -1,6 +1,6 @@
 # Implementation Roadmap
 
-**Status snapshot:** 2026-11-20. Core identity/authorization, wallet and ledger APIs, eligible wallet-funded orders, payment sandbox/webhook verification, durable quest progress, reward lease renewal/manual-review APIs, color-token application lease renewal, typed SDK color-token methods, the renewable SDK reward worker, and a disabled native reward-worker scaffold are implemented. Actual native ATLAS item/color application and isolated ATLAS/7DTD runtime validation remain release blockers.
+**Status snapshot:** 2026-11-20. Core identity/authorization, wallet and ledger APIs, eligible wallet-funded orders, payment sandbox/webhook verification, durable quest progress, reward lease renewal/manual-review APIs, color-token application lease renewal, typed SDK color-token methods, and a disabled native reward-worker scaffold are implemented. Reviewed Core outbox consumers in Adventures, Connect, Tribes, Sentinel, and the native host now enforce single-event claims; Adventures renews its active lease and Connect exposes renewal. Actual native ATLAS item/color application, Discord delivery, and isolated ATLAS/7DTD runtime validation remain release blockers.
 
 ## Phase 1 — Platform foundation
 - [x] Create dedicated repositories.
@@ -54,6 +54,16 @@
 - [ ] Enable live reward delivery only after the exact server build/API version and ABI are attested and the isolated test suite passes.
 
 The native worker remains disabled by default. No production server configuration, database migration, or live item grant has been performed.
+
+## Core outbox lease-safety status
+
+- [x] Adventures: one-event claims, active lease renewal during processing, and immediate polling after nonempty work.
+- [x] Connect: one-event claims filtered to chat.global and chat.tribe; exposes fenced renewal for its caller-owned heartbeat. No Discord delivery worker or durable delivery receipts yet.
+- [x] Tribes: one-event consumer and processor guard; multi-event arrays fail closed.
+- [x] Sentinel: one-event consumer and processor guard; multi-event arrays fail closed.
+- [x] Native ATLAS host: one-event claims and multi-event response rejection before plugin callbacks.
+- [ ] Add active-event heartbeats to Tribes, Sentinel, and the native host before allowing long-running handlers or increasing claim limits.
+- [ ] Implement Connect's durable delivery worker only after canonical chat payload mapping, destination routing, per-destination idempotency receipts, and terminal-failure handling are defined.
 
 ## Release gates
 No production deployment, live payment processing, game-server modification, live Discord changes or paid infrastructure until explicitly approved. All game adapters must pass compatibility tests on isolated servers first.
