@@ -16,11 +16,18 @@ This registry records repository ownership, implementation maturity, overlap bou
 
 - **34** repositories exist in the organization.
 - **22** belong to the ATLAS ecosystem or its direct platform/game integration layer; the other 12 are separate CMG projects and were left untouched.
-- All 22 in-scope repositories currently have only their default branch.
-- The organization-wide open pull-request search returned **zero open PRs** after this cleanup.
-- **16 obsolete or superseded branches** were explicitly deleted after their changes were verified as merged, identical to main, empty, or superseded.
-- **7 PRs were merged** during this consolidation pass: five dependency updates and two focused regression-test PRs.
+- All 22 in-scope repositories now have only their default branch; the three remediation branches were automatically removed after merge.
+- The organization-wide open pull-request check returned **zero open PRs** across the 22 in-scope repositories.
+- **17 obsolete or superseded branches** have been explicitly deleted across the cleanup passes. The final additional deletion was `fix/quest-progress-completion-integrity` in Core, verified identical to `main` with no open PR.
+- **10 PRs have been merged** across the cleanup passes: the seven recorded in the prior snapshot plus Core #29, Glitch Bot #25, and native adapter #20.
 - **No repositories were deleted.** The reviewed repositories have distinct responsibilities; apparent overlaps are integration boundaries, not confirmed duplicate repositories.
+
+### Latest validated changes — 2026-11-20
+
+- [Core PR #29](https://github.com/Chaotic-Minds-Collective/cmg-atlas-core-plugin/pull/29) removed a duplicate `STEAM_OPENID_RETURN_URL` entry while retaining the required callback. Core tests, migration checks, validation, and static analysis passed.
+- [Glitch Bot PR #25](https://github.com/Chaotic-Minds-Collective/cmg-discord-glitch-bot/pull/25) added bounded multi-message server-status delivery, retry-safe partial progress, a conflicting-catalog recovery guard, and single-flight monitor cycles. Node tests, CodeQL, and post-merge checks passed.
+- [Native adapter PR #20](https://github.com/Chaotic-Minds-Collective/cmg-atlas-plugin/pull/20) pinned the adapter to hardened API commit `a757d0c256e6d221742fb131d46d8049c12815a6`, corrected the MSVC API-version diagnostic, and updated compatibility documentation. The API build and adapter Windows x64 build passed; live ATLAS server compatibility remains unverified.
+- Core quest progress now rejects initial progress jumps and excessive subsequent increments; the corresponding regression tests are on the default branch.
 
 ### Security snapshot
 
@@ -41,17 +48,17 @@ Status meanings:
 
 | Repository | Canonical responsibility | Current maturity | Boundary / remaining work |
 |---|---|---|---|
-| `cmg-atlas-core-plugin` | Shared identity, authorization, PostgreSQL persistence, migrations, event outbox/leases, commerce and reward foundations | Foundation | Core owns identity, RBAC, shared persistence, ledger and delivery infrastructure. Public wallet balance/spend APIs and complete wallet-funded purchase flows remain blockers. |
+| `cmg-atlas-core-plugin` | Shared identity, authorization, PostgreSQL persistence, migrations, event outbox/leases, commerce and reward foundations | Foundation | Core owns identity, RBAC, shared persistence, append-only wallet ledger, authenticated wallet balance/ledger reads, atomic wallet-funded order payment, color-token application records, and shared delivery infrastructure. Manual adjustments/transfers and running native reward delivery remain incomplete. |
 | `cmg-sdk` | Shared TypeScript contracts and package definitions | Foundation | Keep contracts versioned and consistent with Core. CI and consumer contract compatibility must remain green. |
-| `cmg-atlas-api` | Pinned native ATLAS Server API source/dependency | Reference | Not a feature plugin. Validate the exact pinned revision against the target server build and ABI before runtime claims. |
-| `cmg-atlas-plugin` | Native Windows/C++ ATLAS adapter and loader integration | Partial | Owns native hooks, game-thread dispatch and plugin lifecycle. Keep initialization out of `DllMain`; validate dependency loading and isolated-server behavior. |
+| `cmg-atlas-api` | Pinned native ATLAS Server API source/dependency | Reference | The adapter pins hardened commit `a757d0c256e6d221742fb131d46d8049c12815a6`. Not a feature plugin; validate the exact pinned revision against the target server build and ABI before runtime claims. |
+| `cmg-atlas-plugin` | Native Windows/C++ ATLAS adapter and loader integration | Partial | Pins `cmg-atlas-api` at `a757d0c256e6d221742fb131d46d8049c12815a6`; Windows x64 compilation passes with loader path/dependency and hook hardening. Player hooks remain opt-in/disabled; isolated-server ABI and load proof are still required. |
 | `cmg-atlas-admin-plugin` | Game/server-side ATLAS administration backend and operations | Partial | Keep game-specific server operations here. Use Core identity/authorization rather than a second independent permission authority. |
 | `cmg-admin-console-plugin` | Operator-facing administration console | Partial | Owns the UI and operator workflows. Consume Core APIs; do not duplicate Core authorization, audit, or canonical status logic. |
 | `cmg-atlas-connect-plugin` | Cross-grid message envelopes, relay policy, announcements and Discord relay contracts | Partial | Contracts and retry/scope policy exist; actual Discord delivery remains incomplete. |
-| `cmg-discord-glitch-bot` | Discord-native onboarding, verification, tickets, moderation and community operations | Partial | Remains an independent Discord application. Use it as a transport/integration point for Connect, not as a second chat or identity authority. |
-| `cmg-atlas-commerce-plugin` | Shop, checkout, products, entitlements and commerce client | Partial | Core owns wallet/ledger authority; Commerce owns purchase and entitlement workflows. Complete wallet-funded purchase/spend APIs before enabling token purchases. |
+| `cmg-discord-glitch-bot` | Discord-native onboarding, verification, tickets, moderation and community operations | Partial | Server-status delivery now preserves full catalogs, resumes partial sends safely, and prevents overlapping monitor cycles. Ticket lifecycle persistence/transcripts remain incomplete. Use it as a transport/integration point for Connect, not as a second chat or identity authority. |
+| `cmg-atlas-commerce-plugin` | Shop, checkout, products, entitlements and commerce client | Partial | Core owns wallet/ledger authority; Commerce exposes authenticated wallet balance/ledger reads and wallet-funded payment for eligible orders. Actual game delivery, refund/reconciliation, and full legacy shop parity remain incomplete. |
 | `cmg-atlas-player-plugin` | Player utilities, recovery policy, snapshots and progression-facing operations | Partial | Snapshot contracts, encryption and notifications exist; native capture and full restore workflows remain incomplete. |
-| `cmg-atlas-adventures-plugin` | Quest definitions, objective validation, progression and completion | Partial | Versioned definitions and reducer/replay logic exist. Complete objective coverage and durable progress/reward integration through Core outbox/leases; do not add an independent queue. |
+| `cmg-atlas-adventures-plugin` | Quest definitions, objective validation, progression and completion | Partial | Durable progress persists through Core with optimistic-version conflict retries, outbox leases/renewals, and lease-fenced acknowledgements. Current objectives cover only `player.joined` and `player.left`; complete event coverage and actual game reward delivery remain. Do not add an independent queue. |
 | `cmg-atlas-tribes-plugin` | Tribe membership and group-domain reconciliation | Partial | Own tribe-domain reconciliation and group objectives; consume normalized Core events. |
 | `cmg-atlas-world-plugin` | World policies, safe-zone rules and environment configuration | Partial | Current policies are observe-only/dry-run. Live enforcement, NPCs, weather and scheduled world-event controls remain future work. |
 | `cmg-atlas-sentinel-plugin` | Server health classification, monitoring and alert processing | Partial | Monitoring lifecycle/classification exists; durable alert storage, notification delivery and recovery automation remain incomplete. |
@@ -68,7 +75,7 @@ Status meanings:
 
 | Original module | Current owner(s) | Consolidation decision |
 |---|---|---|
-| AtlasCore | `cmg-atlas-core-plugin` | Canonical shared identity, RBAC, persistence, outbox/leases, wallet and API foundation. |
+| AtlasCore | `cmg-atlas-core-plugin` | Canonical shared identity, RBAC, persistence, outbox/leases, append-only wallet/ledger, wallet-funded eligible orders, color-token application records, and API foundation. |
 | AtlasAdmin | `cmg-atlas-admin-plugin` + `cmg-admin-console-plugin` | Keep server-side game operations separate from the operator UI. Consolidate authorization and audit through Core. |
 | AtlasChat | `cmg-atlas-connect-plugin` + `cmg-discord-glitch-bot` | Connect owns relay contracts/policy; Glitch Bot provides Discord-native transport and community workflows. |
 | AtlasEconomy | Core + `cmg-atlas-commerce-plugin` | Core owns wallet/ledger; Commerce owns catalog, checkout and entitlements. Player/native code performs game actions. |
@@ -81,7 +88,7 @@ Status meanings:
 1. **Identity and authorization:** Core is authoritative. Website, bot, console and game modules use scoped Core identities/permissions; Discord roles do not implicitly grant game-administration permissions.
 2. **Status and monitoring:** Sentinel owns monitoring and alert classification. Core exposes authoritative operational records. Admin Console, Status Host and Restart Overlay consume that data rather than implementing separate status systems.
 3. **Chat:** Connect owns message envelopes, cross-grid scope and relay policy. Glitch Bot owns Discord-native transport and community workflows.
-4. **Wallet and color tokens:** Core owns the wallet and append-only ledger. Commerce owns purchases/entitlements. Player/native integration applies the verified color change and acknowledges success before a token is consumed. No independent SQLite/MySQL currency ledger.
+4. **Wallet and color tokens:** Core owns the wallet/append-only ledger and color-token application records. Commerce owns purchases/entitlements. The native adapter must validate and apply the selected color, then acknowledge success before a token is consumed. No independent SQLite/MySQL currency ledger.
 5. **Events:** Core owns shared durable outbox/lease infrastructure. Each module owns its domain processing and must be idempotent. Do not create independent queues per plugin.
 6. **Quests and world policy:** Adventures owns quest progression; World owns environment and policy definitions. Do not combine their domain models.
 7. **Maps and topology:** Resource Map owns the existing map experience/data; GridForge owns topology/configuration authoring and validation through a shared schema.
@@ -92,8 +99,8 @@ Status meanings:
 | Priority | Gap | Owner(s) | Required outcome |
 |---|---|---|---|
 | P0 | Native API/loader runtime proof | `cmg-atlas-api`, `cmg-atlas-plugin` | Verify the pinned API against an isolated target ATLAS server build; validate dependency checks, safe paths, game-thread dispatch and shutdown. |
-| P0 | Core wallet API parity | Core + Commerce | Expose validated balance/spend/ledger operations and idempotent purchase flow before enabling wallet-funded features. |
-| P0 | Durable quest progress/rewards | Core + Adventures | Use Core persistence/outbox/leases; enforce progress validation, initial-row concurrency, lease renewal/fencing and acknowledge only after successful game-thread delivery. |
+| P0 | Native reward and item delivery | Core + Commerce + native adapter | Core wallet APIs and reward claim/ack contracts exist. Implement a running idempotent delivery worker and verified native ATLAS item/creature/ship grants; acknowledge only after the game confirms success. |
+| P0 | Quest objective and reward completion | Core + Adventures + native adapter | Durable progress, optimistic conflict retries, lease renewal/fencing and durable acknowledgements exist. Add remaining event types, connect completion to Core reward jobs, and deliver rewards on the game thread before acknowledging game delivery. |
 | P1 | Discord relay delivery | Connect + Glitch Bot | Implement actual delivery, retry/idempotency and safe reconnect behavior against the existing relay contracts. |
 | P1 | Player capture/restore | Player + native adapter | Complete a verified native snapshot capture/restore pipeline with ownership, encryption and rollback tests. |
 | P1 | Admin boundary cleanup | AtlasAdmin + Admin Console + Core | Route identity, authorization and audit through Core; keep server operations separate from the UI. |
@@ -107,7 +114,7 @@ Status meanings:
 - Cryo storage and complete tame serialization/restoration.
 - Ship spawning, repair, construction, recovery and combat timers.
 - Player-selected creature, ship and armor color application.
-- Full shop, trading, wallet-spending and color-token purchase workflows.
+- Full legacy shop/trading parity and native color-token application. Wallet balance/ledger reads and eligible wallet-funded order payment are implemented; actual in-game delivery remains separate.
 - Scheduled world events, NPCs and weather control.
 - Verified native game hooks for planned gameplay operations.
 
@@ -125,9 +132,9 @@ These are **not complete** merely because a related repository, API contract, or
 
 ## Consolidation order
 
-1. Keep SDK/Core contracts and migrations green; verify the exact native API pin and loader lifecycle.
-2. Complete Core wallet balance/spend/ledger APIs and idempotent purchase contracts.
-3. Finish Adventures durability using Core outbox/lease infrastructure.
+1. Keep SDK/Core contracts and migrations green; complete isolated ATLAS server validation for the pinned API/adapter.
+2. Implement the Core-backed native reward-delivery worker and verified game grants, including color-token application.
+3. Expand Adventures objectives and connect quest completion to Core reward jobs without adding a second queue.
 4. Implement Connect's actual Discord delivery through Glitch Bot.
 5. Complete Player native snapshot/restore and acknowledge-after-success workflows.
 6. Consolidate AtlasAdmin/Admin Console around Core authorization and audit.

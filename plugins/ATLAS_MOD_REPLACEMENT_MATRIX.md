@@ -69,7 +69,7 @@ The 30 packages consolidate into these owned systems:
 - **Good server-plugin candidates:** administration, announcements, chat routing, permissions, death handling, respec, stack rules, decay, taming rules, player stats and stable logic, provided the API exposes the necessary hooks.
 - **Potentially mixed code + data work:** recipes, crops, shipyard definitions, structure placement rules and item definitions.
 - **Not a server-plugin-only replacement:** new creatures, new ship models, buildings, foliage, decor, icons, animations and other cooked Unreal content. These require original content assets and a validated content pipeline.
-- **ATLAS API dependency:** the Atlas Server API 1.71 listing is dated May 2024. No loader build or plugin has yet been validated against the target server. Keep all implementation behind an adapter until the proof-of-concept passes.
+- **ATLAS API dependency:** the native adapter pins `cmg-atlas-api` commit `a757d0c256e6d221742fb131d46d8049c12815a6`, which includes loader path/dependency and hook hardening. The Windows x64 adapter build passes, but no loader or plugin has yet been validated against the target server runtime. Keep gameplay hooks disabled until the isolated proof-of-concept passes.
 - **No DevKit assumption:** the initial plan must not depend on the user installing or operating the ATLAS DevKit.
 
 ## Implementation sequence

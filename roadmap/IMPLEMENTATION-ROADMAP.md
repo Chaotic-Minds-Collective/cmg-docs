@@ -1,5 +1,7 @@
 # Implementation Roadmap
 
+**Status snapshot:** 2026-11-20. Core identity/authorization, wallet and ledger APIs, eligible wallet-funded orders, payment sandbox/webhook verification, durable quest progress, and the native adapter's Windows x64 build are implemented. Actual native reward delivery and isolated ATLAS/7DTD runtime validation remain release blockers.
+
 ## Phase 1 — Platform foundation
 - [x] Create dedicated repositories.
 - [x] Establish Core TypeScript/Fastify scaffold.
@@ -7,20 +9,20 @@
 - [x] Add game registry and isolated game schemas.
 - [x] Add service-token authentication middleware and provisioning CLI.
 - [x] Define shared SDK contracts.
-- [ ] Pass Core CI build and migration checks.
-- [ ] Review and merge foundational PRs.
+- [x] Pass Core CI build and migration checks.
+- [x] Review and merge foundational PRs.
 
 ## Phase 2 — Identity and API
 - [ ] Player registration and secure login/recovery.
-- [ ] Discord and Steam account linking with proof of ownership.
-- [ ] Scoped permission enforcement for user and service identities.
+- [x] Discord and Steam account linking with proof of ownership.
+- [x] Scoped permission enforcement for user and service identities.
 - [ ] API versioning, request validation, rate limiting and audit coverage.
 - [ ] API contract tests and OpenAPI documentation.
 
 ## Phase 3 — Existing applications
 - [ ] Integrate website with Core account and game catalog APIs.
-- [ ] Integrate Glitch Bot using a dedicated service identity.
-- [ ] Preserve bot-native features during Core outages.
+- [x] Integrate Glitch Bot using a dedicated service identity.
+- [x] Preserve bot-native features during Core outages.
 - [ ] Add integration health and reconnect behavior.
 
 ## Phase 4 — Game integrations
@@ -32,9 +34,9 @@
 
 ## Phase 5 — Community and commerce
 - [ ] Community tickets, moderation cases, announcements and events.
-- [ ] Product catalog and game-specific product mappings.
-- [ ] Payment sandbox and signed webhook verification.
-- [ ] Entitlements, append-only wallet ledger and reward queue.
+- [x] Product catalog and game-specific product mappings.
+- [x] Payment sandbox and signed webhook verification.
+- [x] Entitlements, append-only wallet ledger and reward queue.
 - [ ] Reconciliation, refund handling and abuse controls.
 
 ## Release gates
