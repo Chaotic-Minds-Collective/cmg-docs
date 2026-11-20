@@ -1,6 +1,6 @@
 # Implementation Roadmap
 
-**Status snapshot:** 2026-11-20. Core identity/authorization, wallet and ledger APIs, eligible wallet-funded orders, payment sandbox/webhook verification, durable quest progress, reward lease renewal/manual-review APIs, the renewable SDK worker, and a disabled native reward-worker scaffold are implemented. Actual native ATLAS item grants and isolated ATLAS/7DTD runtime validation remain release blockers.
+**Status snapshot:** 2026-11-20. Core identity/authorization, wallet and ledger APIs, eligible wallet-funded orders, payment sandbox/webhook verification, durable quest progress, reward lease renewal/manual-review APIs, color-token application lease renewal, typed SDK color-token methods, the renewable SDK reward worker, and a disabled native reward-worker scaffold are implemented. Actual native ATLAS item/color application and isolated ATLAS/7DTD runtime validation remain release blockers.
 
 ## Phase 1 — Platform foundation
 - [x] Create dedicated repositories.
